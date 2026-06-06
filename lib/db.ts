@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { Db } from "mongodb";
+import { MongoClient, type Db } from "mongodb";
 
 type dbCache = {
   conn: typeof mongoose | null;
@@ -8,6 +8,7 @@ type dbCache = {
 
 const mongoGlobal = global as typeof globalThis & {
   mongoose: dbCache;
+  mongoClient: MongoClient | undefined;
 };
 
 const MONGODB_URI = (process.env.MONGODB_URI ||
@@ -21,6 +22,11 @@ if (!MONGODB_URI) {
 
 const cached = mongoGlobal.mongoose ?? { conn: null, promise: null };
 mongoGlobal.mongoose = cached;
+
+const mongoClient =
+  mongoGlobal.mongoClient ?? new MongoClient(MONGODB_URI, {});
+mongoGlobal.mongoClient = mongoClient;
+
 export async function dbConnect(): Promise<typeof mongoose> {
   if (cached.conn) {
     return cached.conn;
@@ -44,10 +50,5 @@ export async function dbConnect(): Promise<typeof mongoose> {
 
   return cached.conn;
 }
-const conn = await dbConnect();
-if (!conn.connection.db) {
-  throw new Error("MongoDB database connection was not initialized");
-}
-
-const db = conn.connection.db as unknown as Db;
+const db = mongoClient.db() as unknown as Db;
 export { db };
