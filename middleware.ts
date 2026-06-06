@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
+
+function hasSessionCookie(request: NextRequest) {
+  return Boolean(
+    request.cookies.get("better-auth.session_token") ||
+      request.cookies.get("__Secure-better-auth.session_token"),
+  );
+}
+
 export async function middleware(request: NextRequest) {
-  const sessionCookie = getSessionCookie(request);
+  const sessionCookie = hasSessionCookie(request);
   const { pathname } = request.nextUrl;
   if (sessionCookie && ["/login", "/signup", "/register"].includes(pathname)) {
     return NextResponse.redirect(new URL("/dashboard", request.url));

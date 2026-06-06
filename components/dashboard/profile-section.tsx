@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload } from "lucide-react";
-import { Session, User } from "better-auth";
+import type { Session, User } from "@/lib/auth";
 
 export function ProfileSection({
   session,

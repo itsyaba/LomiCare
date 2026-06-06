@@ -25,7 +25,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { User } from "@/lib/auth";
+import type { User } from "@/lib/auth";
 const data = {
   navMain: [
     {
