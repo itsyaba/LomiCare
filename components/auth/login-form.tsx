@@ -74,9 +74,9 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Welcome back to Selam</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your email to continue your wellness check-ins.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -122,14 +122,14 @@ export function LoginForm({
                   {loading ? (
                     <IconLoader className="animate-spin" stroke={2} />
                   ) : (
-                    "Login"
+                    "Log in"
                   )}
                 </Button>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <a href="/signup" className="underline underline-offset-4">
+              <a href="/register" className="underline underline-offset-4">
                 Sign up
               </a>
             </div>

@@ -12,10 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { useRouter } from "next/navigation";
-
 import { authClient } from "@/lib/auth-client";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Alert, AlertDescription } from "../ui/alert";
 import { Terminal } from "lucide-react";
 
 import { IconLoader } from "@tabler/icons-react";
@@ -25,42 +23,36 @@ export function ForgetPassword({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter();
-
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError("");
     try {
-      const res = await authClient.forgetPassword({
+      await (authClient as any).forgetPassword({
         email,
         redirectTo: "/reset-password",
         fetchOptions: {
-          onSuccess: (ctx) => {
-            console.log("success on call: ", ctx);
+          onSuccess: () => {
             toast.success(
-              "We have successfully sent your a verification email to your account.",
+              "We sent a password reset link to your email.",
             );
           },
-          onError: (ctx) => {
-            console.log("Error on call: ", ctx);
-            alert(ctx.error.message);
+          onError: (ctx: { error: { message: string } }) => {
+            setError(ctx.error.message);
           },
           onResponse: () => {
-            setLoading(false);
             setIsSubmitting(false);
           },
         },
       });
     } catch (err) {
-      console.log("Error on call: ", err);
       setError("An error occurred");
+      setIsSubmitting(false);
     }
   };
   return (

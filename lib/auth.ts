@@ -1,11 +1,10 @@
-import { APIError, betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { betterAuth } from "better-auth";
+import { createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { admin, createAuthMiddleware } from "better-auth/plugins";
+import { admin } from "better-auth/plugins";
 import { db } from "./db";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { Db } from "mongodb";
-import { Exo } from "next/font/google";
 if (!db) {
   throw new Error("Database not connected");
 }
@@ -15,7 +14,7 @@ export const auth = betterAuth({
     enabled: true,
   },
   hooks: {
-    before: createAuthMiddleware(async (ctx) => {}),
+    before: createAuthMiddleware(async () => {}),
   },
   account: {},
   plugins: [admin(), nextCookies()],

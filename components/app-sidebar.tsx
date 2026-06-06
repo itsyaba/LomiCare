@@ -1,36 +1,20 @@
 "use client";
 import * as React from "react";
 import {
-  IconCamera,
-  IconChartBar,
-  IconCopy,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
-  IconHome,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconMoneybag,
-  IconMoneybagPlus,
-  IconReport,
-  IconSearch,
   IconSettings,
   IconUserCircle,
-  IconUsers,
   IconShieldLock,
   IconBell,
   IconDeviceDesktop,
-  IconKey,
   IconCreditCard,
+  IconHeartRateMonitor,
+  IconMessageCircle,
+  IconNews,
+  IconLeaf,
 } from "@tabler/icons-react";
 
-import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -50,14 +34,24 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Account",
-      url: "/dashboard/profile",
-      icon: IconUserCircle,
+      title: "Daily Check-in",
+      url: "/checkin",
+      icon: IconHeartRateMonitor,
     },
     {
-      title: "Subscriptions",
-      url: "/dashboard/subscriptions",
-      icon: IconMoneybagPlus,
+      title: "AI Companion",
+      url: "/chat",
+      icon: IconMessageCircle,
+    },
+    {
+      title: "Wellness Feed",
+      url: "/feed",
+      icon: IconNews,
+    },
+    {
+      title: "Profile",
+      url: "/profile",
+      icon: IconUserCircle,
     },
     {
       title: "Setting",
@@ -85,11 +79,6 @@ const data = {
           icon: IconDeviceDesktop,
         },
         {
-          title: "API Keys",
-          url: "/dashboard/setting/api-keys",
-          icon: IconKey,
-        },
-        {
           title: "Billing",
           url: "/dashboard/setting/billing",
           icon: IconCreditCard,
@@ -98,62 +87,6 @@ const data = {
     },
   ],
 
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Upgrade to PRO",
-      url: "/",
-      icon: IconMoneybag,
-    },
-  ],
-  documents: [],
 };
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -173,9 +106,11 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Dashboard</span>
+              <a href="/dashboard">
+                <IconLeaf className="!size-5 text-primary" />
+                <span className="font-display text-xl font-semibold">
+                  Selam
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -183,8 +118,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

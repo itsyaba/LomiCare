@@ -75,8 +75,10 @@ export function SignupForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>Get started with your new account</CardDescription>
+          <CardTitle>Create your Selam account</CardTitle>
+          <CardDescription>
+            Start daily check-ins and culturally grounded wellness guidance.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
@@ -94,7 +96,7 @@ export function SignupForm({
                   value={fullname}
                   id="name"
                   type="text"
-                  placeholder="Achour Meguenni"
+                  placeholder="Aster Bekele"
                   required
                 />
               </div>
@@ -116,7 +118,7 @@ export function SignupForm({
                 <PasswordInput
                   onChange={(e: any) => setPassword(e.target.value)}
                   value={password}
-                  id="password"
+                  id="confirm-password"
                   type="password"
                   required
                 />
@@ -139,7 +141,7 @@ export function SignupForm({
                   {loading ? (
                     <IconLoader className="animate-spin" stroke={2} />
                   ) : (
-                    "Sign Up"
+                    "Sign up"
                   )}
                 </Button>
               </div>
@@ -147,7 +149,7 @@ export function SignupForm({
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
               <a href="/login" className="underline underline-offset-4">
-                Login
+                Log in
               </a>
             </div>
           </form>
