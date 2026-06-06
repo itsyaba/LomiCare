@@ -43,6 +43,9 @@ export const auth = betterAuth({
   baseURL: authBaseURL,
   trustedOrigins: [...new Set(trustedOrigins)],
   database: mongodbAdapter(db as unknown as Db),
+  rateLimit: {
+    enabled: false,
+  },
   emailAndPassword: {
     enabled: true,
     disableSignUp: false,
