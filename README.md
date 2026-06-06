@@ -699,6 +699,7 @@ MONGODB_URI=mongodb+srv://...
 # Better Auth
 BETTER_AUTH_SECRET=your_secret_here
 BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_TRUSTED_ORIGINS=http://localhost:3000
 
 # Mistral AI
 MISTRAL_API_KEY=your_mistral_api_key_here
@@ -706,7 +707,12 @@ MISTRAL_MODEL=mistral-medium-latest
 
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
 ```
+
+For Vercel, set the URL values to the deployed origin, for example
+`https://lomi-care.vercel.app`. `BETTER_AUTH_SECRET` must be a strong random
+secret and should be configured in Vercel, not committed.
 
 ---
 

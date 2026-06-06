@@ -1,10 +1,10 @@
 import { createAuthClient } from "better-auth/react";
-// type for auth client if incase not properly configured.
-type BAClient = ReturnType<typeof createAuthClient>;
+
 export const authClient = createAuthClient({
   baseURL:
     process.env.NEXT_PUBLIC_BETTER_AUTH_URL ||
-    process.env.NEXT_PUBLIC_APP_URL,
+    process.env.NEXT_PUBLIC_APP_URL ||
+    undefined,
   fetchOptions: {
     credentials: "include",
   },
