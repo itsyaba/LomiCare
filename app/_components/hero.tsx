@@ -44,6 +44,14 @@ export default function HeroSection() {
               size="lg"
               className="h-12 rounded-md px-6"
             >
+              <Link href="/register">Get started</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="h-12 rounded-md px-6"
+            >
               <Link href="/login">Log in</Link>
             </Button>
           </div>

@@ -37,13 +37,16 @@ export default async function page() {
                   <LogoutButton />
                 </div>
               ) : (
-                <>
+                <div className="flex items-center gap-2">
                   <Link href="/login">
                     <Button className="rounded-sm" variant="outline">
                       Log in
                     </Button>
                   </Link>
-                </>
+                  <Link href="/register">
+                    <Button className="rounded-sm">Register</Button>
+                  </Link>
+                </div>
               )}
             </div>
           </nav>

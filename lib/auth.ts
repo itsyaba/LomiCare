@@ -8,11 +8,27 @@ import { Db } from "mongodb";
 if (!db) {
   throw new Error("Database not connected");
 }
+
+const authBaseURL =
+  process.env.BETTER_AUTH_URL ||
+  process.env.NEXT_PUBLIC_BETTER_AUTH_URL ||
+  process.env.NEXT_PUBLIC_APP_URL;
+
+const trustedOrigins = [
+  authBaseURL,
+  process.env.NEXT_PUBLIC_APP_URL,
+  ...(process.env.BETTER_AUTH_TRUSTED_ORIGINS?.split(",") ?? []),
+]
+  .map((origin) => origin?.trim())
+  .filter((origin): origin is string => Boolean(origin));
+
 export const auth = betterAuth({
+  baseURL: authBaseURL,
+  trustedOrigins,
   database: mongodbAdapter(db as unknown as Db),
   emailAndPassword: {
     enabled: true,
-    disableSignUp: true,
+    disableSignUp: false,
   },
   hooks: {
     before: createAuthMiddleware(async () => {}),
