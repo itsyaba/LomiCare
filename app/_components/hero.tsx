@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, HeartPulse, Languages, Sprout } from "lucide-react";
+import { HeartPulse, Languages, Sprout } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -39,17 +39,10 @@ export default function HeroSection() {
             food, faith, family, and pace of life.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg" className="h-12 rounded-md px-6">
-              <Link href="/register">
-                Get started
-                <ArrowRight className="ml-2 size-4" />
-              </Link>
-            </Button>
             <Button
               asChild
-              variant="outline"
               size="lg"
-              className="h-12 rounded-md border-primary/30 bg-white/60 px-6"
+              className="h-12 rounded-md px-6"
             >
               <Link href="/login">Log in</Link>
             </Button>

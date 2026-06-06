@@ -12,6 +12,7 @@ export const auth = betterAuth({
   database: mongodbAdapter(db as unknown as Db),
   emailAndPassword: {
     enabled: true,
+    disableSignUp: true,
   },
   hooks: {
     before: createAuthMiddleware(async () => {}),
@@ -35,20 +36,6 @@ export const auth = betterAuth({
           console.log("session update after", session);
         },
       },
-    },
-  },
-  socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    },
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    },
-    twitter: {
-      clientId: process.env.TWITTER_CLIENT_ID!,
-      clientSecret: process.env.TWITTER_CLIENT_SECRET!,
     },
   },
 });

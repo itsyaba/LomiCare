@@ -43,9 +43,6 @@ export default async function page() {
                       Log in
                     </Button>
                   </Link>
-                  <Link href="/register">
-                    <Button className="rounded-sm">Sign up</Button>
-                  </Link>
                 </>
               )}
             </div>

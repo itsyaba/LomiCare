@@ -35,8 +35,7 @@ export default function RootLayout({
       <body className={`${jakarta.variable} ${cormorant.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
           disableTransitionOnChange
         >
           <LanguageProvider>

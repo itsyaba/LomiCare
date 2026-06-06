@@ -18,18 +18,18 @@ The name _Selam_ (ሰላም) means _peace_ in Amharic — the foundation of all 
 
 ## 🧱 Tech Stack
 
-| Layer         | Technology                                                           |
-| ------------- | -------------------------------------------------------------------- |
-| Framework     | Next.js 14+ (App Router)                                             |
-| Language      | TypeScript                                                           |
-| Auth          | Better Auth                                                          |
-| Database      | MongoDB (via Mongoose)                                               |
-| AI            | Mistral AI (`mistral-medium-latest`) via `@mistralai/mistralai`       |
-| Styling       | Tailwind CSS v3                                                      |
-| UI Components | shadcn/ui                                                            |
-| Icons         | Lucide React                                                         |
-| Fonts         | Google Fonts (see Design System section)                             |
-| Deployment    | Vercel                                                               |
+| Layer         | Technology                                                      |
+| ------------- | --------------------------------------------------------------- |
+| Framework     | Next.js 14+ (App Router)                                        |
+| Language      | TypeScript                                                      |
+| Auth          | Better Auth                                                     |
+| Database      | MongoDB (via Mongoose)                                          |
+| AI            | Mistral AI (`mistral-medium-latest`) via `@mistralai/mistralai` |
+| Styling       | Tailwind CSS v3                                                 |
+| UI Components | shadcn/ui                                                       |
+| Icons         | Lucide React                                                    |
+| Fonts         | Google Fonts (see Design System section)                        |
+| Deployment    | Vercel                                                          |
 
 ---
 
@@ -835,4 +835,4 @@ Build in this order to maintain a working app at every stage:
 ---
 
 _Built for the Wellness Hackathon 2026 — ALX Ethiopia × Kuriftu Resorts × WeVaSphere_  
-_Heal. Build. Thrive. — ፈውስ። ግንባታ። ብልጽግና።_
+_Heal. Build. Thrive. _
