@@ -835,7 +835,7 @@ Build in this order to maintain a working app at every stage:
 - Voice input for check-ins (speak in Amharic, transcribed by Whisper API)
 - Push notifications / PWA for daily check-in reminders
 - Community circles — anonymous peer support groups
-- Integration with Ethiopian telehealth providers
+- Integration with Ethiopian tele health providers
 - WhatsApp bot version for users without app access
 
 ---

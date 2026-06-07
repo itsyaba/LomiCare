@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
+import { SafetySupportCard } from "@/components/safety/SafetySupportCard";
 
 type Message = {
   role: "user" | "assistant";
@@ -17,50 +18,42 @@ export function ChatWindow() {
   const { language, t } = useLanguage();
   const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
   const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: t.chat.greeting,
-    },
+    { role: "assistant", content: t.chat.greeting },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [safetyRisk, setSafetyRisk] = useState<"none" | "low" | "medium" | "high">("none");
   const history = useMemo(() => messages.slice(-8), [messages]);
 
   async function sendMessage(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const message = input.trim();
-
-    if (!message || loading) {
-      return;
-    }
+    if (!message || loading) return;
 
     setInput("");
     setLoading(true);
+    setSafetyRisk("none");
     setMessages((current) => [...current, { role: "user", content: message }]);
 
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message,
-        sessionId,
-        language,
-        history,
-      }),
+      body: JSON.stringify({ message, sessionId, language, history }),
     });
     const payload = await response.json();
-
     setLoading(false);
 
     if (!response.ok) {
       setMessages((current) => [
         ...current,
-        {
-          role: "assistant",
-          content: payload.error ?? "I could not respond right now.",
-        },
+        { role: "assistant", content: payload.error ?? "I could not respond right now." },
       ]);
       return;
+    }
+
+    // Surface safety risk if flagged by the API
+    if (payload.safetyRisk && payload.safetyRisk !== "none") {
+      setSafetyRisk(payload.safetyRisk);
     }
 
     setSessionId(payload.sessionId);
@@ -72,24 +65,17 @@ export function ChatWindow() {
 
   function clearConversation() {
     setSessionId(crypto.randomUUID());
-    setMessages([
-      {
-          role: "assistant",
-          content: t.chat.fresh,
-      },
-    ]);
+    setSafetyRisk("none");
+    setMessages([{ role: "assistant", content: t.chat.fresh }]);
   }
 
   return (
     <div className="flex min-h-[calc(100svh-8rem)] flex-col rounded-lg border bg-card shadow-sm">
+      {/* Header */}
       <div className="flex items-center justify-between gap-3 border-b px-4 py-3">
         <div>
-          <h1 className="font-display text-3xl font-semibold">
-            {t.chat.title}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {t.chat.description}
-          </p>
+          <h1 className="font-display text-3xl font-semibold">{t.chat.title}</h1>
+          <p className="text-sm text-muted-foreground">{t.chat.description}</p>
         </div>
         <Button
           type="button"
@@ -102,6 +88,14 @@ export function ChatWindow() {
         </Button>
       </div>
 
+      {/* Safety banner (shown inline when risk is medium/high) */}
+      {(safetyRisk === "medium" || safetyRisk === "high") && (
+        <div className="px-4 pt-4">
+          <SafetySupportCard riskLevel={safetyRisk} />
+        </div>
+      )}
+
+      {/* Messages */}
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5">
         {messages.map((message, index) => (
           <div
@@ -120,9 +114,7 @@ export function ChatWindow() {
               )}
             >
               {message.role === "assistant" && (
-                <p className="mb-1 text-xs font-semibold text-secondary">
-                  Selam
-                </p>
+                <p className="mb-1 text-xs font-semibold text-secondary">Selam</p>
               )}
               <p>{message.content}</p>
             </div>
@@ -138,6 +130,7 @@ export function ChatWindow() {
         )}
       </div>
 
+      {/* Input */}
       <form className="border-t p-4" onSubmit={sendMessage}>
         <div className="flex gap-3">
           <Textarea

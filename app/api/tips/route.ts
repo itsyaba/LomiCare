@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
 import { dbConnect } from "@/lib/db";
-import { generateTips, type Language } from "@/lib/mistral";
+import { type Language } from "@/lib/mistral";
+import { getCachedTips } from "@/lib/tipsCache";
 import CheckIn from "@/models/CheckIn";
 
 export async function GET(request: Request) {
@@ -22,7 +23,8 @@ export async function GET(request: Request) {
   const recent = await CheckIn.find({ userId: session.user.id })
     .sort({ date: -1 })
     .limit(7);
-  const tips = await generateTips(
+  const tips = await getCachedTips(
+    session.user.id,
     recent.map((checkin) => ({
       date: checkin.date.toISOString(),
       mood: checkin.mood,

@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload } from "lucide-react";
 import type { Session, User } from "@/lib/auth";
+import { TrustedCircleManager } from "@/components/trusted-circle/TrustedCircleManager";
 
 export function ProfileSection({
   session,
@@ -26,15 +27,6 @@ export function ProfileSection({
   const [email, setEmail] = useState(session.user.email);
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          Profile
-        </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Manage your personal information and how it appears to others.
-        </p>
-      </div>
-
       <Card className="border-zinc-200 dark:border-zinc-800 dark:bg-transparent">
         <CardHeader>
           <CardTitle className="text-zinc-900 dark:text-zinc-100">
@@ -168,6 +160,8 @@ export function ProfileSection({
           )}
         </CardFooter>
       </Card>
+
+      <TrustedCircleManager />
     </div>
   );
 }

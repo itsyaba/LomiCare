@@ -21,15 +21,6 @@ export default function BillingSection() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          Billing
-        </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Manage your subscription, payment methods, and billing history.
-        </p>
-      </div>
-
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList className="bg-zinc-100 dark:bg-zinc-800 p-0.5">
           <TabsTrigger

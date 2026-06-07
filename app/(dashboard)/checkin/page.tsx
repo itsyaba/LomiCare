@@ -1,5 +1,9 @@
 import { headers } from "next/headers";
 
+import {
+  AmbientBackdrop,
+  PageHeader,
+} from "@/components/dashboard/page-header";
 import { CheckinForm } from "@/components/checkin/checkin-form";
 import { StreakBadge } from "@/components/checkin/streak-badge";
 import {
@@ -29,49 +33,74 @@ export default async function CheckinPage() {
   const completed = today ? serializeCheckIn(today) : null;
 
   return (
-    <main className="mx-auto grid w-full max-w-5xl gap-6 px-4 md:grid-cols-[0.85fr_1.15fr] lg:px-6">
-      <section>
-        <div className="sticky top-20 rounded-lg border bg-card p-6 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-secondary">
-            Daily rhythm
-          </p>
-          <h1 className="font-display mt-3 text-4xl font-bold leading-tight">
-            How are you feeling today?
-          </h1>
-          <p className="mt-4 text-sm leading-6 text-muted-foreground">
-            A one-minute check-in helps Selam understand your energy, rest, and
-            stress patterns before AI personalization is connected.
-          </p>
-          <div className="mt-5">
-            <StreakBadge streak={streak} />
-          </div>
-        </div>
-      </section>
+    <main className="relative isolate space-y-8 px-4 pb-12 lg:px-6">
+      <AmbientBackdrop variant="cool" />
 
-      <section>
-        {completed ? (
-          <div className="rounded-lg border bg-card p-6 shadow-sm">
-            <h2 className="text-xl font-semibold">Today is complete</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              You already checked in today. Come back tomorrow to keep the
-              streak moving.
+      <PageHeader
+        eyebrow="daily rhythm"
+        title="How are you"
+        italicAccent="today?"
+        sub="A one-minute pause. Selam listens to your energy, sleep, and stress so the rituals stay close to where you are."
+        right={<StreakBadge streak={streak} />}
+      />
+
+      <section className="grid w-full gap-6 md:grid-cols-[0.9fr_1.1fr]">
+        <aside className="space-y-5">
+          <div className="rounded-2xl border border-border/60 bg-card/70 p-6 backdrop-blur">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Why we ask
             </p>
-            <div className="mt-5 grid gap-3 sm:grid-cols-4">
-              <Metric label="Mood" value={`${completed.mood}/10`} />
-              <Metric label="Energy" value={`${completed.energy}/5`} />
-              <Metric label="Sleep" value={`${completed.sleep}h`} />
-              <Metric label="Stress" value={`${completed.stress}/5`} />
-            </div>
-            <div className="mt-5 rounded-lg bg-muted/70 p-4">
-              <p className="text-sm font-semibold">Selam insight</p>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {completed.aiInsight}
-              </p>
-            </div>
+            <p className="mt-3 font-serif text-lg leading-7 text-foreground">
+              Small daily readings let your patterns become visible — without
+              long journaling.
+            </p>
+            <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
+              {[
+                "Mood — how light or heavy the day feels",
+                "Energy — what your body has to give",
+                "Sleep — how restful the night was",
+                "Stress — what's pressing on you",
+              ].map((item) => (
+                <li key={item} className="flex gap-3">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary/70" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        ) : (
-          <CheckinForm />
-        )}
+        </aside>
+
+        <section>
+          {completed ? (
+            <div className="rounded-2xl border border-border/60 bg-card/70 p-6 backdrop-blur">
+              <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                Done for today
+              </p>
+              <h2 className="mt-3 font-serif text-2xl font-medium text-foreground">
+                Today is complete. <span className="italic text-primary">Rest.</span>
+              </h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Come back tomorrow to keep the streak moving.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-4">
+                <Metric label="Mood" value={`${completed.mood}/10`} />
+                <Metric label="Energy" value={`${completed.energy}/5`} />
+                <Metric label="Sleep" value={`${completed.sleep}h`} />
+                <Metric label="Stress" value={`${completed.stress}/5`} />
+              </div>
+              <div className="mt-6 rounded-xl border border-border/60 bg-background/60 p-5">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  Selam insight
+                </p>
+                <p className="mt-2 font-serif text-base leading-7 text-foreground">
+                  {completed.aiInsight}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <CheckinForm />
+          )}
+        </section>
       </section>
     </main>
   );
@@ -79,9 +108,11 @@ export default async function CheckinPage() {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg bg-muted/70 p-3">
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      <p className="mt-1 text-lg font-semibold">{value}</p>
+    <div className="rounded-xl border border-border/60 bg-background/60 p-3">
+      <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1 font-serif text-lg text-foreground">{value}</p>
     </div>
   );
 }

@@ -20,21 +20,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { LowDataModeToggle } from "@/components/offline/LowDataModeToggle";
 
 export function PreferencesSection() {
   const { theme, setTheme } = useTheme();
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          Preferences
-        </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Customize your account settings and notification preferences.
-        </p>
-      </div>
-
       <Card className="border-zinc-200 dark:border-zinc-800 dark:bg-zinc-950">
         <CardHeader>
           <CardTitle className="text-zinc-900 dark:text-zinc-100">
@@ -139,6 +131,20 @@ export function PreferencesSection() {
             </div>
             <Switch />
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-zinc-200 dark:border-zinc-800 dark:bg-zinc-950">
+        <CardHeader>
+          <CardTitle className="text-zinc-900 dark:text-zinc-100">
+            Network & Performance
+          </CardTitle>
+          <CardDescription className="text-zinc-500 dark:text-zinc-400">
+            Optimize Selam for your connection.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LowDataModeToggle />
         </CardContent>
       </Card>
 

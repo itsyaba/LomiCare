@@ -1,20 +1,18 @@
 import { Sparkles } from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 export function InsightCard({ insight }: { insight?: string }) {
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Latest insight</CardTitle>
-        <Sparkles className="size-5 text-accent" />
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm leading-6 text-muted-foreground">
-          {insight ||
-            "Complete your first check-in to receive a personalized Selam insight."}
+    <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/70 p-6 backdrop-blur">
+      <div className="flex items-center gap-2">
+        <Sparkles className="size-4 text-primary" />
+        <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          Latest insight
         </p>
-      </CardContent>
-    </Card>
+      </div>
+      <p className="mt-4 font-serif text-lg leading-7 text-foreground">
+        {insight ||
+          "Complete your first check-in to receive a personalised Selam insight."}
+      </p>
+    </div>
   );
 }

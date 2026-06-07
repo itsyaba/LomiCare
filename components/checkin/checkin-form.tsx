@@ -17,6 +17,8 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/hooks/useLanguage";
+import { VoiceCheckInButton } from "./voice-checkin-button";
+import { DailyRitualCard } from "@/components/ritual/DailyRitualCard";
 
 type CreatedCheckIn = {
   insight: string;
@@ -70,6 +72,25 @@ export function CheckinForm() {
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [created, setCreated] = useState<CreatedCheckIn | null>(null);
+  const [ritual, setRitual] = useState<any>(null);
+  const [ritualLoading, setRitualLoading] = useState(false);
+
+  async function generateRitual() {
+    setRitualLoading(true);
+    try {
+      const res = await fetch("/api/ritual", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language }),
+      });
+      const data = await res.json();
+      if (data.ritual) setRitual(data.ritual);
+    } catch {
+      toast.error("Could not generate ritual. Try from the dashboard.");
+    } finally {
+      setRitualLoading(false);
+    }
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -98,6 +119,8 @@ export function CheckinForm() {
 
     setCreated({ insight: payload.insight, streak: payload.streak });
     router.refresh();
+    // Auto-generate today's ritual
+    generateRitual();
   }
 
   if (created) {
@@ -120,6 +143,21 @@ export function CheckinForm() {
               {created.insight}
             </p>
           </div>
+
+          {ritualLoading && (
+            <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="size-4 animate-spin" />
+              Generating your daily ritual…
+            </div>
+          )}
+
+          {ritual && !ritualLoading && (
+            <div className="mt-4">
+              <p className="mb-2 text-sm font-semibold">Your Daily Ritual</p>
+              <DailyRitualCard ritual={ritual} />
+            </div>
+          )}
+
           <Button className="mt-5" onClick={() => router.push("/dashboard")}>
             Return to dashboard
           </Button>
@@ -174,7 +212,18 @@ export function CheckinForm() {
           />
 
           <div className="space-y-3">
-            <Label htmlFor="note">{t.checkin.note}</Label>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Label htmlFor="note">{t.checkin.note}</Label>
+              <VoiceCheckInButton
+                onExtract={(data) => {
+                  if (data.mood) setMood(data.mood);
+                  if (data.energy) setEnergy(data.energy);
+                  if (data.stress) setStress(data.stress);
+                  if (data.sleepHours !== undefined && data.sleepHours !== null) setSleep(data.sleepHours);
+                  if (data.cleanedNote) setNote(data.cleanedNote);
+                }}
+              />
+            </div>
             <Textarea
               id="note"
               value={note}

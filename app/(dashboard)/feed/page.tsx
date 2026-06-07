@@ -1,7 +1,12 @@
+import {
+  AmbientBackdrop,
+  PageHeader,
+  SectionHeading,
+} from "@/components/dashboard/page-header";
 import { TipCard } from "@/components/feed/tip-card";
 import { auth } from "@/lib/auth";
 import { dbConnect } from "@/lib/db";
-import { generateTips } from "@/lib/mistral";
+import { getCachedTips } from "@/lib/tipsCache";
 import CheckIn from "@/models/CheckIn";
 import { headers } from "next/headers";
 
@@ -36,7 +41,8 @@ export default async function FeedPage() {
   const recent = await CheckIn.find({ userId: session?.user.id })
     .sort({ date: -1 })
     .limit(7);
-  const tips = await generateTips(
+  const tips = await getCachedTips(
+    session?.user.id,
     recent.map((checkin) => ({
       date: checkin.date.toISOString(),
       mood: checkin.mood,
@@ -48,18 +54,18 @@ export default async function FeedPage() {
   );
 
   return (
-    <main className="space-y-6 px-4 lg:px-6">
-      <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-secondary">
-          Wellness feed
-        </p>
-        <h1 className="font-display mt-2 text-4xl font-bold">
-          Practical ideas for today
-        </h1>
-      </div>
+    <main className="relative isolate space-y-10 px-4 pb-12 lg:px-6">
+      <AmbientBackdrop variant="warm" />
 
-      <section>
-        <h2 className="mb-3 text-lg font-semibold">Personalized tips</h2>
+      <PageHeader
+        eyebrow="wellness feed"
+        title="Practical ideas,"
+        italicAccent="gently chosen."
+        sub="A small library of nudges — some tailored to your recent check-ins, some curated for life in Ethiopia."
+      />
+
+      <section className="space-y-5">
+        <SectionHeading eyebrow="for you" title="Personalised tips" />
         <div className="grid gap-4 md:grid-cols-3">
           {tips.map((tip) => (
             <TipCard key={`${tip.category}-${tip.title}`} tip={tip} />
@@ -67,8 +73,8 @@ export default async function FeedPage() {
         </div>
       </section>
 
-      <section>
-        <h2 className="mb-3 text-lg font-semibold">Curated Selam notes</h2>
+      <section className="space-y-5">
+        <SectionHeading eyebrow="curated" title="Selam notes" />
         <div className="grid gap-4 md:grid-cols-3">
           {curated.map((tip) => (
             <TipCard key={tip.title} tip={tip} />

@@ -1,11 +1,19 @@
-import { LoginForm } from "@/components/auth/login-form";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+import { AuthShell } from "@/components/auth/auth-shell";
+import { LoginForm } from "@/components/auth/login-form";
+import { auth } from "@/lib/auth";
+
+export default async function Page() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
   return (
-    <div className="flex min-h-svh w-full items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(232,184,75,0.22),transparent_34%),linear-gradient(180deg,var(--background),var(--muted))] p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <LoginForm />
-      </div>
-    </div>
+    <AuthShell variant="login">
+      <LoginForm />
+    </AuthShell>
   );
 }

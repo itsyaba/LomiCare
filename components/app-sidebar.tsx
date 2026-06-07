@@ -1,18 +1,21 @@
 "use client";
 import * as React from "react";
 import {
-  IconDashboard,
-  IconSettings,
-  IconUserCircle,
-  IconShieldLock,
-  IconBell,
-  IconDeviceDesktop,
-  IconCreditCard,
-  IconHeartRateMonitor,
-  IconMessageCircle,
-  IconNews,
-  IconLeaf,
-} from "@tabler/icons-react";
+  LayoutDashboard,
+  ClipboardCheck,
+  MessageCircle,
+  Newspaper,
+  UserCircle,
+  Settings,
+  ShieldCheck,
+  Bell,
+  Monitor,
+  CreditCard,
+  Coffee,
+  CalendarDays,
+  MapPin,
+  Leaf
+} from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -26,67 +29,82 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import type { User } from "@/lib/auth";
+
 const data = {
   navMain: [
     {
       title: "Dashboard",
       url: "/dashboard",
-      icon: IconDashboard,
+      icon: LayoutDashboard,
     },
     {
       title: "Daily Check-in",
       url: "/checkin",
-      icon: IconHeartRateMonitor,
+      icon: ClipboardCheck,
     },
     {
       title: "AI Companion",
       url: "/chat",
-      icon: IconMessageCircle,
+      icon: MessageCircle,
+    },
+    {
+      title: "Daily Ritual",
+      url: "/dashboard",
+      icon: Coffee,
+    },
+    {
+      title: "Peace Plan",
+      url: "/dashboard",
+      icon: CalendarDays,
+    },
+    {
+      title: "Retreat Mode",
+      url: "/retreat",
+      icon: MapPin,
     },
     {
       title: "Wellness Feed",
       url: "/feed",
-      icon: IconNews,
+      icon: Newspaper,
     },
     {
       title: "Profile",
       url: "/profile",
-      icon: IconUserCircle,
+      icon: UserCircle,
     },
     {
       title: "Setting",
       url: "/dashboard/setting",
-      icon: IconSettings,
+      icon: Settings,
       items: [
         {
           title: "Profile",
           url: "/dashboard/setting/profile",
-          icon: IconUserCircle,
+          icon: UserCircle,
         },
         {
           title: "Security",
           url: "/dashboard/setting/security",
-          icon: IconShieldLock,
+          icon: ShieldCheck,
         },
         {
           title: "Notifications",
           url: "/dashboard/setting/notifications",
-          icon: IconBell,
+          icon: Bell,
         },
         {
           title: "Appearance",
           url: "/dashboard/setting/preference",
-          icon: IconDeviceDesktop,
+          icon: Monitor,
         },
         {
           title: "Billing",
           url: "/dashboard/setting/billing",
-          icon: IconCreditCard,
+          icon: CreditCard,
         },
       ],
     },
   ],
-
 };
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -107,7 +125,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/dashboard">
-                <IconLeaf className="!size-5 text-primary" />
+                <Leaf className="!size-5 text-primary" />
                 <span className="font-display text-xl font-semibold">
                   Selam
                 </span>

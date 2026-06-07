@@ -10,9 +10,11 @@ function hasSessionCookie(request: NextRequest) {
 export async function middleware(request: NextRequest) {
   const sessionCookie = hasSessionCookie(request);
   const { pathname } = request.nextUrl;
-  if (sessionCookie && ["/login", "/signup", "/register"].includes(pathname)) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
+
+  // Only gate protected routes. Do NOT redirect auth pages based on cookie
+  // presence — the cookie may be stale/invalid, and pairing this with a
+  // layout redirect (-> /login) causes an infinite middleware loop.
+  // Auth pages handle "already signed-in" themselves via getSession().
   const isProtected =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/checkin") ||
@@ -32,8 +34,5 @@ export const config = {
     "/chat/:path*",
     "/feed/:path*",
     "/profile/:path*",
-    "/login",
-    "/signup",
-    "/register",
   ],
 };

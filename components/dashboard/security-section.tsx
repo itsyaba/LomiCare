@@ -14,15 +14,6 @@ import { Switch } from "@/components/ui/switch";
 export function SecuritySection() {
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          Security
-        </h2>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Manage your password and account security settings.
-        </p>
-      </div>
-
       <Card className="border-zinc-200 dark:border-zinc-800 dark:bg-zinc-950">
         <CardHeader>
           <CardTitle className="text-zinc-900 dark:text-zinc-100">
