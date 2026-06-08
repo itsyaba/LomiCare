@@ -3,6 +3,7 @@
 import { Sparkles, Quote } from "lucide-react";
 
 import { useLanguage } from "@/hooks/useLanguage";
+import { RichText } from "@/components/ui/rich-text";
 
 type Props = {
   insight?: string;
@@ -33,10 +34,13 @@ export function InsightCard({
         </p>
       </div>
       <p className="mt-4 font-serif text-lg leading-7 text-foreground">
-        {insight ||
-          (language === "am"
-            ? "የመጀመሪያውን ምዝገባ ካደረጉ በኋላ የሰላም ግንዛቤ እዚህ ይታያል።"
-            : "Complete your first check-in to receive a personalised Selam insight.")}
+        {insight ? (
+          <RichText text={insight} />
+        ) : language === "am" ? (
+          "የመጀመሪያውን ምዝገባ ካደረጉ በኋላ የሰላም ግንዛቤ እዚህ ይታያል።"
+        ) : (
+          "Complete your first check-in to receive a personalised Selam insight."
+        )}
       </p>
       {proverb && (
         <div className="mt-5 border-t border-border/40 pt-4">
@@ -47,11 +51,11 @@ export function InsightCard({
             </p>
           </div>
           <p className="mt-2 font-serif text-base italic leading-7 text-foreground/90">
-            “{proverb}”
+            “<RichText text={proverb} />”
           </p>
           {language === "en" && proverbMeaning && (
             <p className="mt-1 text-xs text-muted-foreground">
-              {proverbMeaning}
+              <RichText text={proverbMeaning} />
             </p>
           )}
         </div>

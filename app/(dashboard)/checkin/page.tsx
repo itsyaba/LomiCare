@@ -6,6 +6,7 @@ import {
 } from "@/components/dashboard/page-header";
 import { CheckinForm } from "@/components/checkin/checkin-form";
 import { StreakBadge } from "@/components/checkin/streak-badge";
+import { RichText } from "@/components/ui/rich-text";
 import {
   calculateStreak,
   endOfLocalDay,
@@ -93,7 +94,7 @@ export default async function CheckinPage() {
                   Selam insight
                 </p>
                 <p className="mt-2 font-serif text-base leading-7 text-foreground">
-                  {completed.aiInsight}
+                  <RichText text={completed.aiInsight} />
                 </p>
               </div>
             </div>

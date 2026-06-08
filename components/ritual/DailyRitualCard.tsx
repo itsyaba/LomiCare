@@ -6,6 +6,7 @@ import { Check, Clock, Coffee, Flame, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { RichText } from "@/components/ui/rich-text";
 import { toast } from "sonner";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -57,9 +58,9 @@ export function DailyRitualCard({
         </div>
         <CardTitle className="flex items-center gap-2 mt-2">
           {completed ? <Check className="size-5 text-green-500" /> : <Coffee className="size-5 text-primary" />}
-          {ritual.title}
+          <RichText text={ritual.title} />
         </CardTitle>
-        <CardDescription>{ritual.explanation}</CardDescription>
+        <CardDescription><RichText text={ritual.explanation} /></CardDescription>
       </CardHeader>
       <CardContent>
         <ul className="space-y-3 mt-1">
@@ -68,7 +69,7 @@ export function DailyRitualCard({
               <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">
                 {idx + 1}
               </span>
-              <span className={completed ? "opacity-70 line-through" : ""}>{step}</span>
+              <span className={completed ? "opacity-70 line-through" : ""}><RichText text={step} /></span>
             </li>
           ))}
         </ul>

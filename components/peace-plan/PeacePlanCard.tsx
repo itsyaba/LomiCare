@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { CalendarDays, CheckCircle2, Circle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RichText } from "@/components/ui/rich-text";
 import { toast } from "sonner";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -82,7 +83,7 @@ export function PeacePlanCard() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CalendarDays className="size-5 text-primary" />
-          {plan.title}
+          <RichText text={plan.title} />
         </CardTitle>
         <CardDescription>
           {language === "am" ? "ቀላል እርምጃዎችን በየቀኑ ያድርጉ።" : "Small steps every day."}
@@ -99,7 +100,7 @@ export function PeacePlanCard() {
                 <p className={`font-medium text-sm ${isCurrent ? "text-foreground" : "text-foreground/80"}`}>
                   Day {day.dayNumber}: {day.theme}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">{day.action}</p>
+                <p className="text-xs text-muted-foreground mt-1"><RichText text={day.action} /></p>
               </div>
             </div>
           );

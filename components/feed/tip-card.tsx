@@ -1,3 +1,5 @@
+import { RichText } from "@/components/ui/rich-text";
+
 export type Tip = {
   category: string;
   title: string;
@@ -19,7 +21,7 @@ export function TipCard({ tip }: { tip: Tip }) {
       <h3 className="mt-4 font-serif text-xl font-medium leading-snug text-foreground">
         {tip.title}
       </h3>
-      <p className="mt-3 text-sm leading-6 text-muted-foreground">{tip.body}</p>
+      <p className="mt-3 text-sm leading-6 text-muted-foreground"><RichText text={tip.body} /></p>
     </article>
   );
 }

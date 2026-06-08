@@ -1,6 +1,7 @@
 import { Activity, AlertTriangle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { RichText } from "@/components/ui/rich-text";
 
 export function WellnessTrendCard({ trends }: { trends: any }) {
   if (!trends) return null;
@@ -27,12 +28,12 @@ export function WellnessTrendCard({ trends }: { trends: any }) {
         </p>
       </div>
       <p className="mt-4 font-serif text-lg leading-7 text-foreground">
-        {trends.explanation}
+        <RichText text={trends.explanation} />
       </p>
       <p className="mt-3 text-sm text-muted-foreground">
         Recommended focus:{" "}
         <span className="font-medium text-foreground">
-          {trends.recommendedFocus}
+          <RichText text={trends.recommendedFocus} />
         </span>
       </p>
     </div>
