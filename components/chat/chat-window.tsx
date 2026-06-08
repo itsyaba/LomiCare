@@ -1,7 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Loader2, Send, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Coffee,
+  Leaf,
+  Loader2,
+  Mic,
+  MicOff,
+  Send,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,20 +24,99 @@ type Message = {
   content: string;
 };
 
+type Starter = {
+  en: string;
+  am: string;
+  icon: "coffee" | "leaf" | "sparkles";
+};
+
+const STARTERS: Starter[] = [
+  {
+    en: "I've been feeling stretched thin this week.",
+    am: "በዚህ ሳምንት በጣም ደክሞኛል።",
+    icon: "leaf",
+  },
+  {
+    en: "Today is a fasting day — what should I eat?",
+    am: "ዛሬ ጾም ነው — ምን ብበላ ይሻላል?",
+    icon: "coffee",
+  },
+  {
+    en: "I can't sleep well. Any quiet ideas?",
+    am: "ጥሩ መተኛት አልቻልኩም። የሚረዳኝ ጸጥ ያለ ሐሳብ አለ?",
+    icon: "sparkles",
+  },
+  {
+    en: "How do I take a real break during a busy day?",
+    am: "በሥራ መካከል ትክክለኛ እረፍት እንዴት ላድርግ?",
+    icon: "coffee",
+  },
+];
+
+function IconFor({ name }: { name: Starter["icon"] }) {
+  if (name === "coffee") return <Coffee className="size-3.5" />;
+  if (name === "leaf") return <Leaf className="size-3.5" />;
+  return <Sparkles className="size-3.5" />;
+}
+
+function TypingDots() {
+  return (
+    <div className="flex items-center gap-1.5 px-1 py-1">
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="size-2 rounded-full bg-secondary"
+          animate={{ y: [0, -4, 0], opacity: [0.4, 1, 0.4] }}
+          transition={{
+            duration: 1,
+            repeat: Infinity,
+            delay: i * 0.18,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function SelamAvatar() {
+  return (
+    <div className="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#e8b84b] via-[#c8622a] to-[#7a4525] shadow-md">
+      <Leaf className="size-4 text-[#faf7f2]" strokeWidth={2} />
+      <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full border-2 border-card bg-secondary" />
+    </div>
+  );
+}
+
 export function ChatWindow() {
-  const { language, t } = useLanguage();
+  const { language, t, setLanguage } = useLanguage();
   const [sessionId, setSessionId] = useState(() => crypto.randomUUID());
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: t.chat.greeting },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [safetyRisk, setSafetyRisk] = useState<"none" | "low" | "medium" | "high">("none");
+  const [listening, setListening] = useState(false);
+  const [safetyRisk, setSafetyRisk] =
+    useState<"none" | "low" | "medium" | "high">("none");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<unknown>(null);
   const history = useMemo(() => messages.slice(-8), [messages]);
 
-  async function sendMessage(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const message = input.trim();
+  // Refresh greeting on language change (only if conversation untouched)
+  useEffect(() => {
+    if (messages.length <= 1) {
+      setMessages([{ role: "assistant", content: t.chat.greeting }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language]);
+
+  // Auto-scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  async function send(text: string) {
+    const message = text.trim();
     if (!message || loading) return;
 
     setInput("");
@@ -35,32 +124,42 @@ export function ChatWindow() {
     setSafetyRisk("none");
     setMessages((current) => [...current, { role: "user", content: message }]);
 
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, sessionId, language, history }),
-    });
-    const payload = await response.json();
-    setLoading(false);
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, sessionId, language, history }),
+        credentials: "include",
+      });
+      const payload = await response.json();
 
-    if (!response.ok) {
+      if (!response.ok) {
+        setMessages((current) => [
+          ...current,
+          {
+            role: "assistant",
+            content: payload.error ?? "I could not respond right now.",
+          },
+        ]);
+        return;
+      }
+
+      if (payload.safetyRisk && payload.safetyRisk !== "none") {
+        setSafetyRisk(payload.safetyRisk);
+      }
+      setSessionId(payload.sessionId);
       setMessages((current) => [
         ...current,
-        { role: "assistant", content: payload.error ?? "I could not respond right now." },
+        { role: "assistant", content: payload.reply },
       ]);
-      return;
+    } finally {
+      setLoading(false);
     }
+  }
 
-    // Surface safety risk if flagged by the API
-    if (payload.safetyRisk && payload.safetyRisk !== "none") {
-      setSafetyRisk(payload.safetyRisk);
-    }
-
-    setSessionId(payload.sessionId);
-    setMessages((current) => [
-      ...current,
-      { role: "assistant", content: payload.reply },
-    ]);
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    send(input);
   }
 
   function clearConversation() {
@@ -69,75 +168,232 @@ export function ChatWindow() {
     setMessages([{ role: "assistant", content: t.chat.fresh }]);
   }
 
+  function startListening() {
+    type SRC = new () => {
+      lang: string;
+      interimResults: boolean;
+      continuous: boolean;
+      onresult: ((event: {
+        results: ArrayLike<{ 0: { transcript: string }; isFinal: boolean }>;
+        resultIndex: number;
+      }) => void) | null;
+      onerror: ((event: { error?: string }) => void) | null;
+      onend: (() => void) | null;
+      start: () => void;
+      stop: () => void;
+    };
+    const w = window as unknown as Record<string, SRC | undefined>;
+    const SR = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    if (!SR) return;
+
+    const r = new SR();
+    r.lang = language === "am" ? "am-ET" : "en-US";
+    r.interimResults = true;
+    r.continuous = false;
+
+    let collected = "";
+    r.onresult = (event) => {
+      let interim = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const result = event.results[i];
+        if (result.isFinal) collected += result[0].transcript + " ";
+        else interim += result[0].transcript;
+      }
+      setInput((collected + interim).trim());
+    };
+    r.onerror = () => setListening(false);
+    r.onend = () => setListening(false);
+    r.start();
+    setListening(true);
+    recognitionRef.current = r;
+  }
+
+  function stopListening() {
+    if (recognitionRef.current) {
+      (recognitionRef.current as { stop: () => void }).stop();
+    }
+    setListening(false);
+  }
+
+  const supportsVoice =
+    typeof window !== "undefined" &&
+    Boolean(
+      (window as unknown as Record<string, unknown>).SpeechRecognition ||
+        (window as unknown as Record<string, unknown>).webkitSpeechRecognition,
+    );
+
   return (
-    <div className="flex min-h-[calc(100svh-8rem)] flex-col rounded-lg border bg-card shadow-sm">
+    <div className="relative flex min-h-[calc(100svh-10rem)] flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/70 backdrop-blur">
+      {/* Warm ambient backdrop inside the chat surface */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -right-24 -top-24 -z-10 size-72 rounded-full bg-[radial-gradient(circle,rgba(232,184,75,0.22),transparent_70%)] blur-2xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 -left-24 -z-10 size-72 rounded-full bg-[radial-gradient(circle,rgba(74,124,89,0.18),transparent_70%)] blur-2xl"
+      />
+
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 border-b px-4 py-3">
-        <div>
-          <h1 className="font-display text-3xl font-semibold">{t.chat.title}</h1>
-          <p className="text-sm text-muted-foreground">{t.chat.description}</p>
+      <div className="flex items-center justify-between gap-3 border-b border-border/60 px-5 py-4">
+        <div className="flex items-center gap-3">
+          <SelamAvatar />
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="font-serif text-xl text-foreground">Selam</p>
+              <span className="inline-flex items-center gap-1 rounded-full bg-secondary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-secondary">
+                <span className="size-1.5 rounded-full bg-secondary" />
+                online
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {language === "am"
+                ? "በባህል የተመሠረተ የጤና ድጋፍ"
+                : "Culturally grounded wellness — not medical care."}
+            </p>
+          </div>
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={clearConversation}
-          aria-label="Clear conversation"
-        >
-          <Trash2 className="size-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          {/* Language toggle */}
+          <div className="hidden items-center gap-1 rounded-full border border-border/60 bg-background/60 p-1 sm:flex">
+            <button
+              type="button"
+              onClick={() => setLanguage("en")}
+              className={cn(
+                "rounded-full px-3 py-1 text-xs font-medium transition",
+                language === "en"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              EN
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguage("am")}
+              className={cn(
+                "rounded-full px-3 py-1 text-xs font-medium transition",
+                language === "am"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              አማ
+            </button>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={clearConversation}
+            aria-label={language === "am" ? "ጨርስ" : "Clear conversation"}
+            title={language === "am" ? "ጨርስ" : "Start fresh"}
+          >
+            <Trash2 className="size-4" />
+          </Button>
+        </div>
       </div>
 
-      {/* Safety banner (shown inline when risk is medium/high) */}
+      {/* Safety banner */}
       {(safetyRisk === "medium" || safetyRisk === "high") && (
-        <div className="px-4 pt-4">
+        <div className="px-5 pt-4">
           <SafetySupportCard riskLevel={safetyRisk} />
         </div>
       )}
 
       {/* Messages */}
-      <div className="flex-1 space-y-4 overflow-y-auto px-4 py-5">
-        {messages.map((message, index) => (
-          <div
-            key={`${message.role}-${index}`}
-            className={cn(
-              "flex",
-              message.role === "user" ? "justify-end" : "justify-start",
-            )}
-          >
-            <div
+      <div className="flex-1 space-y-5 overflow-y-auto px-5 py-6">
+        <AnimatePresence initial={false}>
+          {messages.map((message, index) => (
+            <motion.div
+              key={`${message.role}-${index}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
               className={cn(
-                "max-w-[82%] rounded-lg px-4 py-3 text-sm leading-6",
-                message.role === "user"
-                  ? "bg-primary text-primary-foreground"
-                  : "border bg-muted/60 text-foreground",
+                "flex items-start gap-3",
+                message.role === "user" ? "flex-row-reverse" : "flex-row",
               )}
             >
-              {message.role === "assistant" && (
-                <p className="mb-1 text-xs font-semibold text-secondary">Selam</p>
-              )}
-              <p>{message.content}</p>
-            </div>
-          </div>
-        ))}
+              {message.role === "assistant" && <SelamAvatar />}
+              <div
+                className={cn(
+                  "group relative max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-7 shadow-sm",
+                  message.role === "user"
+                    ? "rounded-tr-md bg-primary text-primary-foreground"
+                    : "rounded-tl-md border border-border/60 bg-background/80 text-foreground",
+                )}
+              >
+                {message.role === "assistant" && (
+                  <p className="mb-1 text-[10px] uppercase tracking-[0.22em] text-secondary">
+                    Selam
+                  </p>
+                )}
+                <p className="whitespace-pre-line font-serif text-[15px] leading-7">
+                  {message.content}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
         {loading && (
-          <div className="flex justify-start">
-            <div className="inline-flex items-center gap-2 rounded-lg border bg-muted/60 px-4 py-3 text-sm text-muted-foreground">
-              <Loader2 className="size-4 animate-spin" />
-              Selam is thinking
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-start gap-3"
+          >
+            <SelamAvatar />
+            <div className="rounded-2xl rounded-tl-md border border-border/60 bg-background/80 px-4 py-3 shadow-sm">
+              <TypingDots />
             </div>
-          </div>
+          </motion.div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
+      {/* Starter prompts (only before user has sent anything) */}
+      {messages.length <= 1 && !loading && (
+        <div className="border-t border-border/60 bg-background/40 px-5 py-3">
+          <p className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            {language === "am" ? "ለመጀመር" : "Try one of these"}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {STARTERS.map((s) => (
+              <button
+                key={s.en}
+                type="button"
+                onClick={() => send(language === "am" ? s.am : s.en)}
+                className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card px-3 py-1.5 text-xs text-foreground/80 transition hover:border-primary/40 hover:bg-primary/5 hover:text-foreground"
+              >
+                <span className="text-primary">
+                  <IconFor name={s.icon} />
+                </span>
+                <span className="font-serif italic">
+                  {language === "am" ? s.am : s.en}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Input */}
-      <form className="border-t p-4" onSubmit={sendMessage}>
-        <div className="flex gap-3">
+      <form
+        className="border-t border-border/60 bg-background/60 p-4"
+        onSubmit={handleSubmit}
+      >
+        <div className="flex items-end gap-2">
           <Textarea
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder={t.chat.placeholder}
-            className="min-h-12 resize-none"
+            placeholder={
+              listening
+                ? language === "am"
+                  ? "በማዳመጥ ላይ…"
+                  : "Listening…"
+                : t.chat.placeholder
+            }
+            className="min-h-12 resize-none rounded-xl border-border/60 bg-card/80 font-serif text-[15px]"
             onKeyDown={(event) => {
               if (event.key === "Enter" && !event.shiftKey) {
                 event.preventDefault();
@@ -145,11 +401,40 @@ export function ChatWindow() {
               }
             }}
           />
-          <Button type="submit" disabled={loading || !input.trim()}>
-            <Send className="mr-2 size-4" />
-            {t.chat.send}
+          {supportsVoice && (
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={listening ? stopListening : startListening}
+              className={cn(
+                "shrink-0",
+                listening &&
+                  "border-red-500/60 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30",
+              )}
+              aria-label={listening ? "Stop voice" : "Voice input"}
+            >
+              {listening ? <MicOff className="size-4" /> : <Mic className="size-4" />}
+            </Button>
+          )}
+          <Button
+            type="submit"
+            disabled={loading || !input.trim()}
+            className="shrink-0 gap-2"
+          >
+            {loading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Send className="size-4" />
+            )}
+            <span className="hidden sm:inline">{t.chat.send}</span>
           </Button>
         </div>
+        <p className="mt-2 text-[10px] text-muted-foreground">
+          {language === "am"
+            ? "ሰላም ለግል ድጋፍ ነው። የአደጋ ስሜት ካለ የታመነ ሰው ያነጋግሩ።"
+            : "Selam supports — it doesn't diagnose. If you're in danger, reach out to a trusted person."}
+        </p>
       </form>
     </div>
   );

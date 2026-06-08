@@ -88,6 +88,7 @@ interface NavMainProps extends React.HTMLAttributes<HTMLDivElement> {
     title: string;
     url: string;
     icon: React.ElementType;
+    badge?: string;
     items?: {
       title: string;
       url: string;
@@ -156,9 +157,14 @@ export function NavMain({ className, items, ...props }: NavMainProps) {
                     isActive={isActive}
                     tooltip={item.title}
                   >
-                    <a href={item.url}>
+                    <a href={item.url} className="flex items-center gap-2">
                       <item.icon className="size-4" />
                       <span>{item.title}</span>
+                      {item.badge && (
+                        <span className="ml-auto inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                          {item.badge}
+                        </span>
+                      )}
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

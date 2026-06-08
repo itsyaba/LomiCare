@@ -11,12 +11,12 @@ export default function ChatPage() {
 
       <PageHeader
         eyebrow="conversation"
-        title="Speak with"
+        title="A few minutes with"
         italicAccent="Selam."
-        sub="Type or talk — in Amharic or English. No judgement, no logging beyond what you share."
+        sub="Type or speak — in Amharic or English. Selam knows the fasts, the foods, the proverbs. No diagnosis, no scripts."
       />
 
-      <section className="rounded-2xl border border-border/60 bg-card/70 backdrop-blur">
+      <section>
         <ChatWindow />
       </section>
     </main>

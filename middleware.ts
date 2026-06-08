@@ -20,7 +20,9 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/checkin") ||
     pathname.startsWith("/chat") ||
     pathname.startsWith("/feed") ||
-    pathname.startsWith("/profile");
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/ritual") ||
+    pathname.startsWith("/peace-plan");
   if (!sessionCookie && isProtected) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -34,5 +36,7 @@ export const config = {
     "/chat/:path*",
     "/feed/:path*",
     "/profile/:path*",
+    "/ritual/:path*",
+    "/peace-plan/:path*",
   ],
 };

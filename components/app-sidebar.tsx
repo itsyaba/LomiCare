@@ -49,18 +49,19 @@ const data = {
     },
     {
       title: "Daily Ritual",
-      url: "/dashboard",
+      url: "/ritual",
       icon: Coffee,
     },
     {
       title: "Peace Plan",
-      url: "/dashboard",
+      url: "/peace-plan",
       icon: CalendarDays,
     },
     {
       title: "Retreat Mode",
       url: "/retreat",
       icon: MapPin,
+      badge: "Kuriftu",
     },
     {
       title: "Wellness Feed",
