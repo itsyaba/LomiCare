@@ -7,12 +7,14 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Layout, Leaf } from "lucide-react";
 import LogoutButton from "@/components/auth/logout-button-icon";
 
-import HeroSection from "./_components/hero";
+import { SelamHero } from "@/components/landing/SelamHero";
+import { ScrollStory } from "@/components/landing/ScrollStory";
 import HowItWorks from "./_components/how-it-works";
 import Features from "./_components/features";
 import RetreatShowcase from "./_components/retreat";
 import FAQ from "./_components/faq";
 import CTABand from "./_components/cta-band";
+import { TryDemoButton } from "@/components/demo/TryDemoButton";
 
 export default async function page() {
   const session = await auth.api.getSession({
@@ -29,6 +31,12 @@ export default async function page() {
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
+            <a
+              href="#story"
+              className="text-sm text-muted-foreground transition hover:text-foreground"
+            >
+              Why Selam
+            </a>
             <a
               href="#how"
               className="text-sm text-muted-foreground transition hover:text-foreground"
@@ -78,11 +86,11 @@ export default async function page() {
                     Log in
                   </Button>
                 </Link>
-                <Link href="/register">
-                  <Button className="rounded-full" size="sm">
-                    Begin
-                  </Button>
-                </Link>
+                <TryDemoButton
+                  size="sm"
+                  className="rounded-full"
+                  label="Try as guest"
+                />
               </div>
             )}
           </div>
@@ -90,7 +98,10 @@ export default async function page() {
       </header>
 
       <main>
-        <HeroSection />
+        <SelamHero />
+        <div id="story">
+          <ScrollStory />
+        </div>
         <div id="how">
           <HowItWorks />
         </div>
@@ -132,7 +143,8 @@ export default async function page() {
               Built for
             </p>
             <p>Wellness Hackathon 2026</p>
-            <p>ALX Ethiopia &times; Kuriftu Resorts</p>
+            <p>ALX Ethiopia &times; Kuriftu Resorts &times; WeVaSphere</p>
+            <p className="mt-1 italic">Heal. Build. Thrive.</p>
           </div>
         </div>
         <div className="container mx-auto mt-10 flex flex-col gap-2 border-t border-border/60 px-6 pt-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">

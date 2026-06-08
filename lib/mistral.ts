@@ -3,7 +3,12 @@ import { z } from "zod";
 
 import type { CheckInInput } from "@/lib/checkins";
 import { retrieveCulturalContext } from "@/lib/culturalKnowledge";
+import {
+  buildFastingPromptContext,
+  getFastingContextForDate,
+} from "@/lib/fasting-calendar";
 import { safeParseJson } from "@/lib/json";
+import { pickProverbFor } from "@/lib/proverbs";
 
 export type Language = "en" | "am";
 
@@ -253,6 +258,13 @@ export function buildCheckInPrompt(data: CheckInInput, language: Language) {
     language,
     4,
   );
+  const fasting = getFastingContextForDate();
+  const fastingPrompt = buildFastingPromptContext(fasting, language);
+  const proverb = pickProverbFor(data.mood, data.stress);
+  const proverbLine =
+    language === "am"
+      ? `Ethiopian proverb you may weave in if it fits naturally (do not force it): "${proverb.am}"`
+      : `Ethiopian proverb you may weave in if it fits naturally (do not force it): "${proverb.en}"${proverb.meaning ? ` — meaning: ${proverb.meaning}` : ""}`;
 
   return `
 You are Selam, a warm and culturally aware Ethiopian wellness companion.
@@ -266,6 +278,8 @@ Important style rules:
 
 Recent cultural context:
 ${context.map((item) => `- ${item.category}: ${item.content}`).join("\n")}
+${fastingPrompt}
+${proverbLine}
 
 A user just completed their daily wellness check-in:
 - Mood: ${data.mood}/10
@@ -283,6 +297,8 @@ export function buildChatSystemPrompt(language: Language, context: string[] = []
     language === "am"
       ? "Always respond in Amharic. You may use English words where no natural Amharic equivalent exists."
       : "Respond in clear, warm English.";
+  const fasting = getFastingContextForDate();
+  const fastingPrompt = buildFastingPromptContext(fasting, language);
 
   return `
 You are Selam, an AI wellness companion built specifically for Ethiopian users.
@@ -300,6 +316,7 @@ Safety:
 
 Helpful context:
 ${context.length ? context.map((item) => `- ${item}`).join("\n") : "- Use culturally grounded wellness guidance."}
+${fastingPrompt}
 
 Keep responses concise, usually 3-5 sentences.
 `;
@@ -318,6 +335,8 @@ export function buildTipsPrompt(
     language,
     5,
   );
+  const fasting = getFastingContextForDate();
+  const fastingPrompt = buildFastingPromptContext(fasting, language);
 
   return `
 You are Selam, an Ethiopian wellness companion. ${langInstruction}
@@ -327,6 +346,7 @@ ${JSON.stringify(recentCheckins)}
 
 Cultural context:
 ${context.map((item) => `- ${item.category}: ${item.content}`).join("\n")}
+${fastingPrompt}
 
 Generate exactly 3 personalized wellness tips in valid JSON format:
 [
@@ -384,6 +404,8 @@ function buildRitualPrompt(
     language,
     5,
   );
+  const fasting = getFastingContextForDate();
+  const fastingPrompt = buildFastingPromptContext(fasting, language);
 
   return `
 You are Selam, generating a culturally grounded Ethiopian wellness ritual.
@@ -398,6 +420,7 @@ Check-in:
 
 Relevant cultural context:
 ${context.map((item) => `- ${item.category}: ${item.content}`).join("\n")}
+${fastingPrompt}
 
 Create a daily ritual that feels practical, calm, and Ethiopian.
 Return valid JSON only:

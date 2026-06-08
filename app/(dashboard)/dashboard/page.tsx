@@ -8,6 +8,8 @@ import {
 import { InsightCard } from "@/components/dashboard/insight-card";
 import { MoodHistoryChart } from "@/components/dashboard/mood-history-chart";
 import { WellnessScoreCard } from "@/components/dashboard/wellness-score-card";
+import { WellnessGarden } from "@/components/wellness-garden/WellnessGarden";
+import { FastingPill } from "@/components/dashboard/fasting-pill";
 import { TipCard } from "@/components/feed/tip-card";
 import { WellnessTrendCard } from "@/components/dashboard/WellnessTrendCard";
 import { DailyRitualCard } from "@/components/ritual/DailyRitualCard";
@@ -15,6 +17,7 @@ import { PeacePlanCard } from "@/components/peace-plan/PeacePlanCard";
 import { SupportNudgeCard } from "@/components/trusted-circle/SupportNudgeCard";
 import Ritual from "@/models/Ritual";
 import { calculateBurnoutRisk } from "@/lib/wellnessTrends";
+import { getFastingContextForDate } from "@/lib/fasting-calendar";
 import {
   calculateStreak,
   endOfLocalDay,
@@ -79,6 +82,7 @@ export default async function Page() {
         title={`${greeting}, ${firstName}.`}
         italicAccent="Breathe."
         sub="A quiet look at how you've been moving through the week — and a few gentle nudges for today."
+        right={<FastingPill context={getFastingContextForDate()} />}
       />
 
       <section className="grid gap-5 lg:grid-cols-3">
@@ -102,7 +106,15 @@ export default async function Page() {
                 }))}
             />
           </div>
-          <InsightCard insight={checkins[0]?.aiInsight} />
+          <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
+            <InsightCard
+              insight={checkins[0]?.aiInsight}
+              proverbAm={checkins[0]?.proverbAm}
+              proverbEn={checkins[0]?.proverbEn}
+              proverbMeaning={checkins[0]?.proverbMeaning}
+            />
+            <WellnessGarden streak={calculateStreak(checkins)} />
+          </div>
           {burnoutRisk.risk === "high" && <SupportNudgeCard />}
           <div className="grid gap-5 md:grid-cols-2">
             <WellnessTrendCard trends={burnoutRisk} />

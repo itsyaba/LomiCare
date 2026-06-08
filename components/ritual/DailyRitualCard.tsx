@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Clock, Coffee, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Check, Clock, Coffee, Flame, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,8 @@ export function DailyRitualCard({
   ritual: any;
   onComplete?: () => void;
 }) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const router = useRouter();
   const [completed, setCompleted] = useState(ritual?.completed || false);
   const [loading, setLoading] = useState(false);
 
@@ -71,15 +73,24 @@ export function DailyRitualCard({
           ))}
         </ul>
       </CardContent>
-      <CardFooter>
-        <Button 
-          variant={completed ? "secondary" : "default"} 
+      <CardFooter className="flex flex-col gap-2">
+        <Button
+          variant="default"
+          className="w-full gap-2 bg-primary"
+          onClick={() => router.push("/ritual/buna")}
+        >
+          <Flame className="size-4" />
+          {language === "am" ? "የቡና ሥነ ሥርዓት ጀምር" : "Begin the Buna ritual"}
+        </Button>
+        <Button
+          variant={completed ? "secondary" : "ghost"}
+          size="sm"
           className="w-full"
           disabled={completed || loading}
           onClick={handleComplete}
         >
-          {loading ? "Marking..." : completed ? "Completed" : "Mark as Completed"}
-          {!completed && !loading && <Sparkles className="size-4 ml-2" />}
+          {loading ? "Marking..." : completed ? "Completed" : "Or mark as completed"}
+          {!completed && !loading && <Sparkles className="size-3 ml-2" />}
         </Button>
       </CardFooter>
     </Card>

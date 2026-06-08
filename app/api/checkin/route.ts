@@ -12,6 +12,7 @@ import {
   startOfLocalDay,
 } from "@/lib/checkins";
 import { generateCheckInInsight } from "@/lib/mistral";
+import { pickProverbFor } from "@/lib/proverbs";
 import CheckIn from "@/models/CheckIn";
 
 const CheckInSchema = z.object({
@@ -71,11 +72,15 @@ export async function POST(request: Request) {
     parsed.data.language,
     buildHardcodedInsight(parsed.data),
   );
+  const proverb = pickProverbFor(parsed.data.mood, parsed.data.stress);
   const checkin = await CheckIn.create({
     ...parsed.data,
     userId,
     note: parsed.data.note ?? "",
     aiInsight,
+    proverbAm: proverb.am,
+    proverbEn: proverb.en,
+    proverbMeaning: proverb.meaning ?? "",
   });
   const recent = await CheckIn.find({ userId }).sort({ date: -1 }).limit(60);
 

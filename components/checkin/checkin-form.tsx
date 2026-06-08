@@ -17,7 +17,9 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/hooks/useLanguage";
-import { VoiceCheckInButton } from "./voice-checkin-button";
+import { VoiceCheckinDialog } from "@/components/voice/VoiceCheckinDialog";
+import { Button as VoiceTriggerButton } from "@/components/ui/button";
+import { Mic, Sparkles } from "lucide-react";
 import { DailyRitualCard } from "@/components/ritual/DailyRitualCard";
 
 type CreatedCheckIn = {
@@ -74,6 +76,7 @@ export function CheckinForm() {
   const [created, setCreated] = useState<CreatedCheckIn | null>(null);
   const [ritual, setRitual] = useState<any>(null);
   const [ritualLoading, setRitualLoading] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
 
   async function generateRitual() {
     setRitualLoading(true);
@@ -169,12 +172,40 @@ export function CheckinForm() {
   return (
     <Card>
       <CardHeader>
-          <CardTitle>{t.checkin.title}</CardTitle>
-          <CardDescription>
-            {t.checkin.description}
-          </CardDescription>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <CardTitle>{t.checkin.title}</CardTitle>
+            <CardDescription>{t.checkin.description}</CardDescription>
+          </div>
+          <VoiceTriggerButton
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setVoiceOpen(true)}
+            className="gap-2 whitespace-nowrap"
+          >
+            <Mic className="size-4 text-primary" />
+            {language === "am" ? "በድምፅ" : "Use voice"}
+            <Sparkles className="size-3 text-muted-foreground" />
+          </VoiceTriggerButton>
+        </div>
       </CardHeader>
       <CardContent>
+        <VoiceCheckinDialog
+          open={voiceOpen}
+          onOpenChange={setVoiceOpen}
+          onExtract={(data) => {
+            if (data.mood) setMood(data.mood);
+            if (data.energy) setEnergy(data.energy);
+            if (data.stress) setStress(data.stress);
+            if (
+              data.sleepHours !== undefined &&
+              data.sleepHours !== null
+            )
+              setSleep(data.sleepHours);
+            if (data.cleanedNote) setNote(data.cleanedNote);
+          }}
+        />
         <form className="space-y-7" onSubmit={handleSubmit}>
           <div className="rounded-lg border bg-muted/50 p-4">
             <ScaleSlider
@@ -212,18 +243,7 @@ export function CheckinForm() {
           />
 
           <div className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <Label htmlFor="note">{t.checkin.note}</Label>
-              <VoiceCheckInButton
-                onExtract={(data) => {
-                  if (data.mood) setMood(data.mood);
-                  if (data.energy) setEnergy(data.energy);
-                  if (data.stress) setStress(data.stress);
-                  if (data.sleepHours !== undefined && data.sleepHours !== null) setSleep(data.sleepHours);
-                  if (data.cleanedNote) setNote(data.cleanedNote);
-                }}
-              />
-            </div>
+            <Label htmlFor="note">{t.checkin.note}</Label>
             <Textarea
               id="note"
               value={note}

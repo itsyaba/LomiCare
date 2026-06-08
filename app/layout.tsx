@@ -20,9 +20,33 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Selam - Ethiopian Wellness Companion",
+  title: "Selam — Wellness in your mother tongue",
   description:
-    "AI-powered daily wellness check-ins and culturally grounded guidance for Ethiopian users.",
+    "A culturally grounded Ethiopian wellness companion. Voice journaling in Amharic, a guided Buna ceremony, ጾም-aware AI, and a coffee plant that grows with your streak.",
+  applicationName: "Selam",
+  keywords: [
+    "Ethiopian wellness",
+    "Amharic wellness app",
+    "buna ceremony",
+    "Selam",
+    "ALX Hackathon",
+    "Kuriftu",
+  ],
+  authors: [{ name: "Selam team" }],
+  openGraph: {
+    title: "Selam — Wellness in your mother tongue",
+    description:
+      "Voice journaling in Amharic, a guided Ethiopian coffee ceremony, ጾም-aware AI, and a coffee plant that grows with your streak.",
+    siteName: "Selam",
+    type: "website",
+    locale: "en_ET",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Selam — Wellness in your mother tongue",
+    description:
+      "Ethiopian wellness, voice journaling in Amharic, the Buna ceremony, ጾም-aware AI.",
+  },
 };
 
 export default function RootLayout({

@@ -56,6 +56,9 @@ export function serializeCheckIn(checkin: ICheckIn) {
     stress: checkin.stress,
     note: checkin.note,
     aiInsight: checkin.aiInsight,
+    proverbAm: checkin.proverbAm ?? "",
+    proverbEn: checkin.proverbEn ?? "",
+    proverbMeaning: checkin.proverbMeaning ?? "",
     language: checkin.language,
   };
 }

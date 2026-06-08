@@ -9,6 +9,9 @@ export interface ICheckIn extends Document {
   stress: number;
   note: string;
   aiInsight: string;
+  proverbAm?: string;
+  proverbEn?: string;
+  proverbMeaning?: string;
   language: "en" | "am";
 }
 
@@ -21,6 +24,9 @@ const CheckInSchema = new Schema<ICheckIn>({
   stress: { type: Number, required: true, min: 1, max: 5 },
   note: { type: String, default: "" },
   aiInsight: { type: String, default: "" },
+  proverbAm: { type: String, default: "" },
+  proverbEn: { type: String, default: "" },
+  proverbMeaning: { type: String, default: "" },
   language: { type: String, enum: ["en", "am"], default: "en" },
 });
 
