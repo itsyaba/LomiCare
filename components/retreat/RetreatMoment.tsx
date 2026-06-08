@@ -87,7 +87,7 @@ export function RetreatMoment({
       <div
         data-bg
         aria-hidden
-        className={`absolute inset-0 -z-20 bg-gradient-to-b ${moment.gradient}`}
+        className={`absolute inset-0 z-0 bg-gradient-to-b ${moment.gradient}`}
         style={{
           backgroundImage: `linear-gradient(rgba(36,26,20,0.32),rgba(36,26,20,0.55)), url(${moment.image})`,
           backgroundSize: "cover",
@@ -97,12 +97,12 @@ export function RetreatMoment({
       {/* Extra warm scrim for legibility */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-[#15100c]/80 via-transparent to-[#15100c]/30"
+        className="absolute inset-0 z-[1] bg-gradient-to-t from-[#15100c]/80 via-transparent to-[#15100c]/30"
       />
 
       <div
         data-content
-        className={`relative mx-auto w-full max-w-2xl px-6 py-24 text-[#FDFBF7] ${
+        className={`relative z-10 mx-auto w-full max-w-2xl px-6 py-24 text-[#FDFBF7] ${
           moment.quiet ? "text-center" : "text-left"
         }`}
       >

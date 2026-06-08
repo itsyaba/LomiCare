@@ -39,7 +39,7 @@ export function RetreatHero({ language }: { language: "en" | "am" }) {
     >
       <div
         aria-hidden
-        className="absolute inset-0 -z-20 bg-gradient-to-b from-[#E4A853] via-[#C17F2C] to-[#3D2C23]"
+        className="absolute inset-0 z-0 bg-gradient-to-b from-[#E4A853] via-[#C17F2C] to-[#3D2C23]"
         style={{
           backgroundImage: `linear-gradient(rgba(36,26,20,0.30),rgba(36,26,20,0.55)), url(/retreat/hero.jpg)`,
           backgroundSize: "cover",
@@ -48,15 +48,15 @@ export function RetreatHero({ language }: { language: "en" | "am" }) {
       />
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-[#15100c]/70 via-transparent to-transparent"
+        className="absolute inset-0 z-[1] bg-gradient-to-t from-[#15100c]/70 via-transparent to-transparent"
       />
 
       <TextilePattern
         patternId="retreat-hero-band"
-        className="absolute inset-x-0 bottom-28 h-7 text-[#E4A853]/40"
+        className="absolute inset-x-0 bottom-28 z-[2] h-7 text-[#E4A853]/40"
       />
 
-      <div data-hero className="relative mx-auto max-w-2xl px-6 text-center text-[#FDFBF7]">
+      <div data-hero className="relative z-10 mx-auto max-w-2xl px-6 text-center text-[#FDFBF7]">
         <Badge className="mb-6 border-none bg-white/15 text-[#FDFBF7] backdrop-blur hover:bg-white/20">
           {am ? "የኩሪፍቱ ሪዞርት አጋር" : "Kuriftu Resort Partner"}
         </Badge>
